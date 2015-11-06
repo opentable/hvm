@@ -1,27 +1,58 @@
 #! /usr/bin/env node
 
-var argv = require('minimist')(process.argv.slice(2), opts={string: 'c'});
+var argv = require('minimist')(process.argv.slice(2), opts={string: 'c'}),
+    colors = require('colors'),
+    fs = require('fs');
+
+var current = fs.statSync('/etc/hosts').ino,
+    path = '/etc/hvm/',
+    profile = argv.c;
 
 if (argv._.length === 0 && Object.keys(argv).length === 1) {
-    console.log('list all host entries');
+
+    console.log('Available profiles:\n');
+    fs.readdirSync(path).map(function (profile) {
+        if (current === fs.statSync(path  + profile).ino) {
+            console.log('*', profile.green);
+        } else {
+            console.log(' ', profile);
+        }
+    })
 }
 
 if (argv._.length > 0) {
-    console.log('change hvm profile', argv._[0]);
+
+    if (fs.existsSync(path + argv._[0])) {
+        fs.unlinkSync('/etc/hosts');
+        fs.linkSync(path + argv._[0], '/etc/hosts');
+        console.log('change hvm profile to', argv._[0]);
+    } else {
+        console.log('profile does not exist');
+    }
+
 }
 
 if (argv.c && argv.c.length > 0) {
-    console.log('create new hvm profile called', argv.c);
+
+    if (fs.existsSync(path + profile)) {
+        console.log('profile \'' + profile + '\' already exists');
+    } else {
+        if (!fs.existsSync(path)) fs.mkdirSync(path);
+
+        fs.createReadStream('/etc/hosts').pipe(fs.createWriteStream(path + profile));
+        console.log('create new hvm profile called', profile);
+    }
 }
 
 if (argv.h) {
-    console.log('hvm\n');
-    console.log('\tSwitch between host entries\n');
+    console.log('hvm');
+    console.log();
+    console.log('Switch between host entries');
+    console.log();
     console.log('Usage:');
-    console.log('\thvm\t\tlist all host entries');
-    console.log('\thvm [name]\tchange hvm profile');
-    console.log('\thvm -c [name]\tcreate new hvm profile called name');
-    console.log('\thvm -h\t\tprint manual\n');
+    console.log('    hvm            list all host entries');
+    console.log('    hvm [name]     change hvm profile');
+    console.log('    hvm -c [name]  create new hvm profile called name');
+    console.log('    hvm -h         print manual');
+    console.log();
 }
-
-console.log(argv);

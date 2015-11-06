@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/opentable/hvm",
   "dependencies": {
+    "colors": "^1.1.2",
     "minimist": "^1.2.0"
   }
 }
