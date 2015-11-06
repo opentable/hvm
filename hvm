@@ -1,0 +1,27 @@
+#! /usr/bin/env node
+
+var argv = require('minimist')(process.argv.slice(2), opts={string: 'c'});
+
+if (argv._.length === 0 && Object.keys(argv).length === 1) {
+    console.log('list all host entries');
+}
+
+if (argv._.length > 0) {
+    console.log('change hvm profile', argv._[0]);
+}
+
+if (argv.c && argv.c.length > 0) {
+    console.log('create new hvm profile called', argv.c);
+}
+
+if (argv.h) {
+    console.log('hvm\n');
+    console.log('\tSwitch between host entries\n');
+    console.log('Usage:');
+    console.log('\thvm\t\tlist all host entries');
+    console.log('\thvm [name]\tchange hvm profile');
+    console.log('\thvm -c [name]\tcreate new hvm profile called name');
+    console.log('\thvm -h\t\tprint manual\n');
+}
+
+console.log(argv);

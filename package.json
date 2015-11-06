@@ -1,0 +1,22 @@
+{
+  "name": "hvm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hvm",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opentable/hvm.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/opentable/hvm/issues"
+  },
+  "homepage": "https://github.com/opentable/hvm",
+  "dependencies": {
+    "minimist": "^1.2.0"
+  }
+}
