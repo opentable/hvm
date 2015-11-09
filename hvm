@@ -41,18 +41,22 @@ if (argv.c && argv.c.length > 0) {
 
         fs.createReadStream('/etc/hosts').pipe(fs.createWriteStream(path + profile));
         console.log('create new hvm profile called', profile);
+
+        fs.unlinkSync('/etc/hosts');
+        fs.linkSync(path + profile, '/etc/hosts');
+        console.log('change hvm profile to', profile);
     }
 }
 
 if (argv.h) {
     console.log('hvm');
     console.log();
-    console.log('Switch between host entries');
+    console.log('  Switch between host entries');
     console.log();
     console.log('Usage:');
-    console.log('    hvm            list all host entries');
-    console.log('    hvm [name]     change hvm profile');
-    console.log('    hvm -c [name]  create new hvm profile called name');
-    console.log('    hvm -h         print manual');
+    console.log('  hvm            list all host entries');
+    console.log('  hvm [name]     change hvm profile');
+    console.log('  hvm -c [name]  create new hvm profile called name');
+    console.log('  hvm -h         print manual');
     console.log();
 }
