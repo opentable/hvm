@@ -6,9 +6,29 @@ var argv = require('minimist')(process.argv.slice(2), opts={string: 'c'}),
 
 var current = fs.statSync('/etc/hosts').ino,
     path = '/etc/hvm/',
-    profile = argv.c;
+    hostsPath = '/etc/hosts';
 
 if (argv._.length === 0 && Object.keys(argv).length === 1) {
+
+    listProfiles();
+
+}
+
+if (argv._.length > 0) {
+
+    var profile = argv._[0];
+    switchProfile(profile);
+
+}
+
+if (argv.c && argv.c.length > 0) {
+
+    var profile = argv.c;
+    createProfile(profile);
+
+}
+
+function listProfiles() {
 
     console.log('Available profiles:\n');
     fs.readdirSync(path).map(function (profile) {
@@ -18,34 +38,36 @@ if (argv._.length === 0 && Object.keys(argv).length === 1) {
             console.log(' ', profile);
         }
     })
+
 }
 
-if (argv._.length > 0) {
+function switchProfile (profile) {
 
-    if (fs.existsSync(path + argv._[0])) {
-        fs.unlinkSync('/etc/hosts');
-        fs.linkSync(path + argv._[0], '/etc/hosts');
-        console.log('change hvm profile to', argv._[0]);
+    if (fs.existsSync(path + profile)) {
+        fs.unlinkSync(hostsPath);
+        fs.linkSync(path + profile, hostsPath);
+        console.log('change hvm profile to', profile);
     } else {
         console.log('profile does not exist');
     }
 
 }
 
-if (argv.c && argv.c.length > 0) {
+function createProfile (profile) {
 
     if (fs.existsSync(path + profile)) {
         console.log('profile \'' + profile + '\' already exists');
     } else {
         if (!fs.existsSync(path)) fs.mkdirSync(path);
 
-        fs.createReadStream('/etc/hosts').pipe(fs.createWriteStream(path + profile));
+        fs.createReadStream(hostsPath).pipe(fs.createWriteStream(path + profile));
         console.log('create new hvm profile called', profile);
 
-        fs.unlinkSync('/etc/hosts');
-        fs.linkSync(path + profile, '/etc/hosts');
+        fs.unlinkSync(hostsPath);
+        fs.linkSync(path + profile, hostsPath);
         console.log('change hvm profile to', profile);
     }
+
 }
 
 if (argv.h) {
