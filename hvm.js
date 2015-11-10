@@ -1,30 +1,27 @@
 #! /usr/bin/env node
 
 var argv = require('minimist')(process.argv.slice(2), opts={string: 'c'}),
-    colors = require('colors'),
-    fs = require('fs');
+    Hvm = require('./lib/hvm');
 
-var current = fs.statSync('/etc/hosts').ino,
-    path = '/etc/hvm/',
-    hostsPath = '/etc/hosts';
+var hvm = new Hvm();
 
 if (argv._.length === 0 && Object.keys(argv).length === 1) {
 
-    listProfiles();
+    hvm.listProfiles();
 
 }
 
 if (argv._.length > 0) {
 
     var profile = argv._[0];
-    switchProfile(profile);
+    hvm.switchProfile(profile);
 
 }
 
 if (argv.c && argv.c.length > 0) {
 
     var profile = argv.c;
-    createProfile(profile);
+    hvm.createProfile(profile);
 
 }
 
